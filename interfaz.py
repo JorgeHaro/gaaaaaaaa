@@ -1,9 +1,9 @@
 #Librerias externas
 from PIL import ImageTk
 import PIL.Image
-from tkinter import Frame,Label,Button,Tk
+from tkinter import CENTER, Frame,Label,Button, StringVar,Tk    
 from tkinter import filedialog
-from tkinter.messagebox import showinfo
+from tkinter.messagebox import askquestion, showinfo
 #Librerias propias
 from pruebaReko import comparar_rostros
 
@@ -13,7 +13,7 @@ def _from_rgb(rgb):
 celeste =(31,149,242)
 turqueza= (49,191,202)
 humoOscuro=(100,100,100) #96,96,98
-humoClaro=(249,249,249)
+humoClaro=(220,220,220) #249,249,249
 humoMedio=(180,180,180) #220,220,220
 humoNegro=(75,75,77)
 rojoPaino = (128, 0, 0)
@@ -31,8 +31,8 @@ class Rekognition():
         #LOGO PAINO
         self.imagen_label1 = PIL.Image.open('./Imagenes/logo.png')
         self.imagen_resize = self.imagen_label1.resize((110,35))
-        self.imagen_label2 = ImageTk.PhotoImage(self.imagen_resize)
-        self.LabelLogo = Label(self.frame1,image=self.imagen_label2, bg=_from_rgb((rojoPaino)))
+        self.imagen_label1 = ImageTk.PhotoImage(self.imagen_resize)
+        self.LabelLogo = Label(self.frame1,image=self.imagen_label1, bg=_from_rgb((rojoPaino)))
 
         #LOGO AWS
         self.imagen_aws = PIL.Image.open('./Imagenes/aws.png')
@@ -40,17 +40,24 @@ class Rekognition():
         self.imagen_aws = ImageTk.PhotoImage(self.awsresize)
         self.LabelAws = Label(self.window, image=self.imagen_aws, bg=_from_rgb((humoOscuro)))
 
+        self.texto_fe = StringVar()
+        self.texto_fe.set("IMAGEN 1")
         self.label_file_explorer = Label(self.window,
-                            text = "IMAGEN 1",
+                            anchor = CENTER,
+                            justify = CENTER,
+                            textvariable=self.texto_fe,
                             font=('@Yu Gothic UI Semibold', 10),
-                            width = 40, height = 2,
+                            width = 40, height = 4,
                             fg = "White",
                             bg=_from_rgb((humoOscuro)))
-
+        self.texto_fe2 = StringVar()
+        self.texto_fe2.set("IMAGEN 2")
         self.label_file_explorer2 = Label(self.window,
-                            text = "IMAGEN 2",
+                            anchor = CENTER,
+                            justify = CENTER,
+                            textvariable=self.texto_fe2,
                             font=('@Yu Gothic UI Semibold', 10),
-                            width = 40, height = 2,
+                            width = 40, height = 4,
                             fg = "White",
                             bg=_from_rgb((humoOscuro)))
         
@@ -62,25 +69,27 @@ class Rekognition():
         #Botones para abrir el buscador de archivos
         self.button_explore = Button(self.window,
                         text = "ABRIR",
+                        cursor = "hand2",
                         command = self.Imagen1,
-                        bg=_from_rgb((humoMedio)),
+                        bg=_from_rgb((humoClaro)),
                         fg="black",
-                        relief="flat"
+                        relief="groove"
                         )
 
         self.button_explore2 = Button(self.window,
                                 text = "ABRIR",
+                                cursor = "hand2",
                                 command = self.Imagen2,
-                                bg=_from_rgb((humoMedio)),
+                                bg=_from_rgb((humoClaro)),
                                 fg="black",
-                                relief="flat"
+                                relief="groove"
                                 )
 
-        self.boton_eliminar1 = Button(self.window, bg=_from_rgb(rojoPaino), relief="flat", command=lambda: self.EliminarImagen1,fg='White',activeforeground="#000000", text='X')
-        self.boton_eliminar2 = Button(self.window, bg=_from_rgb(rojoPaino), relief="flat", command=lambda: self.EliminarImagen2,fg='White',activeforeground="#000000", text='X')
-
-        self.button_comparar = Button(self.window,relief="flat",command=self.Resultado_comparacion,bg=_from_rgb((rojoPaino)),fg='White',activeforeground="#000000", text='COMPARAR')   #relief="flat",command=self.Resultado_comparacion,bg=_from_rgb((rojoPaino)),fg='White',activeforeground="#000000",
-        self.LabelResultado = Label(self.window, text='RESULTADO:',bg=_from_rgb((humoOscuro)),fg = "White",font=('@Yu Gothic UI Semibold', 12),justify='left')
+        self.button_comparar = Button(self.window,relief="flat",cursor = "hand2",command=self.Resultado_comparacion,bg=_from_rgb((rojoPaino)),fg='White',activeforeground="#000000", text='COMPARAR')   #relief="flat",command=self.Resultado_comparacion,bg=_from_rgb((rojoPaino)),fg='White',activeforeground="#000000",
+        
+        self.texto_lr = StringVar()
+        self.texto_lr.set('RESULTADO: ')
+        self.LabelResultado = Label(self.window, textvariable=self.texto_lr,bg=_from_rgb((humoOscuro)),fg = "White",font=('@Yu Gothic UI Semibold', 12),justify='left')
 
         #Posiciones de los botones y labels
         self.label_Titulo.place(x=15,y=7,width=240,height=30)
@@ -110,7 +119,8 @@ class Rekognition():
         lista_path = self.filename1.split('/')
         longitud = len(lista_path)-1
         path_recortado = lista_path[longitud]
-        self.label_file_explorer.configure(text="Imagen: "+path_recortado, font=('@Yu Gothic UI Semibold', 10))
+        #self.label_file_explorer.configure(text="Imagen: "+path_recortado, font=('@Yu Gothic UI Semibold', 10))
+        self.texto_fe.set("Imagen: "+path_recortado)
         return self.filename1  
 
     #Abrir el explorador de ARCHIVOS para la Imagen 2
@@ -128,7 +138,8 @@ class Rekognition():
         lista_path = self.filename2.split('/')
         longitud = len(lista_path)-1
         path_recortado = lista_path[longitud]
-        self.label_file_explorer2.configure(text="Imagen: "+ path_recortado,font=('@Yu Gothic UI Semibold', 10))
+        #self.label_file_explorer2.configure(text="Imagen: "+ path_recortado,font=('@Yu Gothic UI Semibold', 10))
+        self.texto_fe2.set("Imagen: "+ path_recortado)
         return self.filename2
 
     def Imagen1(self):
@@ -140,7 +151,11 @@ class Rekognition():
             self.img1 = Label(self.window,image=render)
             self.img1.image= render
             self.img1.place(x=100,y=130)
-            self.boton_eliminar1.place(x=80,y=80)
+            self.boton_eliminar1 = Button(self.window, bg=_from_rgb(rojoPaino), relief="flat", 
+            command=lambda: self.EliminarImagen1(),
+            fg='White',activeforeground="#000000", text='X')
+            self.boton_eliminar1.configure(font="Arial 10 bold",cursor = "hand2")
+            self.boton_eliminar1.place(x=285,y=130, width=20, height=20)
         else:
             showinfo("ERROR", 'No selecciono una Imagen')
             self.img1.configure(image='',bg=_from_rgb((humoOscuro)))
@@ -154,24 +169,41 @@ class Rekognition():
             self.img2 = Label(self.window,image=render)
             self.img2.image= render
             self.img2.place(x=400,y=130)
-            self.boton_eliminar2.place(x=380,y=80)
+            self.boton_eliminar2 = Button(self.window, bg=_from_rgb(rojoPaino), relief="flat", 
+            command=lambda: self.EliminarImagen2(),
+            fg='White',activeforeground="#000000", text='X')
+            self.boton_eliminar2.configure(font="Arial 10 bold",cursor = "hand2")
+            self.boton_eliminar2.place(x=585,y=130, width=20, height=20)
         else:
             showinfo("ERROR", 'No selecciono una Imagen')
             self.img2.configure(image='',bg=_from_rgb((humoOscuro)))
     
     def EliminarImagen1(self):
-        self.img1.destroy()
-        #self.boton_eliminar1.pack_forget()
+        resultado = askquestion("Eliminar","¿Está seguro que desea eliminar esta imagen?")
+        if resultado == "yes":
+            self.img1.destroy()
+            del self.filename1
+            self.boton_eliminar1.destroy()
+            #self.label_file_explorer.configure(text = "IMAGEN 1", font=('@Yu Gothic UI Semibold', 10))
+            self.texto_fe.set("IMAGEN 1")
     def EliminarImagen2(self):
-        self.img2.destroy()
-        #self.boton_eliminar2.pack_forget()
+        resultado = askquestion("Eliminar","¿Está seguro que desea eliminar esta imagen?")
+        if resultado == "yes":
+            self.img2.destroy()
+            del self.filename2
+            self.boton_eliminar2.destroy()
+            self.texto_fe2.set("IMAGEN 2")
+            #self.label_file_explorer2.configure(text = "IMAGEN 2", font=('@Yu Gothic UI Semibold', 10))
 
     #Funcion que muestra el resultado de la comparacion de las caras
     def Resultado_comparacion(self):
+        # print(self.filename1)
+        # print(self.filename2)
         try:
             # self.LabelResultado.configure(text='')
             self.resultado = comparar_rostros(self.filename1,self.filename2)
-            self.LabelResultado.configure(text= self.resultado,font=('@Yu Gothic UI Semibold', 16))
+            self.texto_lr.set(self.resultado)
+            self.LabelResultado.configure(font=('@Yu Gothic UI Semibold', 16))
         except:
             showinfo("ERROR", 'Seleccione 2 IMAGENES')
 
