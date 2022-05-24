@@ -22,12 +22,13 @@ def comparar_rostros(ruta_imagen1,ruta_imagen2):
 
             for i in respuesta['FaceMatches']:
                 if i['Similarity']>=70:
-                    print('Similarity: ' + str(i['Similarity']))
+                    #print('Similarity: ' + str(i['Similarity']))
                     porcentaje = str(i['Similarity'])
-                    return '  Si es la misma persona \n  Semejanza: ' + porcentaje[0:4] + '%'
+                    return '  Resultado de la comparación: \nLa semejanza es ' + porcentaje[0:4] + '%'
                 else:
-                    print('No es la misma persona, Semajanza: ' + str(i['Similarity']))
-                    return '  No es la misma persona'
+                    #print('No es la misma persona, Semajanza: ' + str(i['Similarity']))
+                    porcentaje = str(i['Similarity'])
+                    return '  Resultado de la comparación: \nLa semejanza es ' + porcentaje[0:4] + '%'
     except ClientError as error:
         print("Ocurrio un error al llamar a la API:",error)
 
